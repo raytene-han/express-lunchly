@@ -14,6 +14,7 @@ class Customer {
     this.lastName = lastName;
     this.phone = phone;
     this.notes = notes;
+    this.fullName = this.fullName();
   }
 
   /** find all customers. */
@@ -90,6 +91,12 @@ class Customer {
       );
     }
   }
+
+  /** concatenates first and last name */
+  fullName () {
+    return this.firstName.concat(' ', this.lastName);
+  }
+
 }
 
 module.exports = Customer;

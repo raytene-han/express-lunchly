@@ -70,7 +70,7 @@ router.post("/:id/add-reservation/", async function (req, res, next) {
   const startAt = new Date(req.body.startAt);
   const numGuests = req.body.numGuests;
   const notes = req.body.notes;
-
+  debugger
   const reservation = new Reservation({
     customerId,
     startAt,
