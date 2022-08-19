@@ -19,5 +19,14 @@
     "jest": "*",
     "supertest": "*"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/raytene-han/express-lunchly.git"
+  },
+  "keywords": [],
+  "bugs": {
+    "url": "https://github.com/raytene-han/express-lunchly/issues"
+  },
+  "homepage": "https://github.com/raytene-han/express-lunchly#readme",
   "description": ""
 }

@@ -96,7 +96,34 @@ class Customer {
   fullName () {
     return this.firstName.concat(' ', this.lastName);
   }
-
+  static async search(searchTerm) {
+    const names = searchTerm.split(' ');
+    let results;
+    if (names.length === 1) {
+    results = await db.query(
+      `SELECT id,
+        first_name AS "firstName",
+        last_name  AS "lastName",
+        phone,
+        notes
+      FROM customers
+      WHERE first_name ilike $1 or last_name ilike $1
+      ORDER BY last_name, first_name`,['%'+names[0]+'%']
+    );
+  } else if ( names.length === 2) {
+      results = await db.query(
+        `SELECT id,
+          first_name AS "firstName",
+          last_name  AS "lastName",
+          phone,
+          notes
+        FROM customers
+        WHERE first_name ilike $1 and last_name ilike $2
+        ORDER BY last_name, first_name`,['%'+names[0]+'%','%'+names[1]+'%']
+      );
+    }
+    return results.rows.map(c => new Customer(c));
+  } 
 }
 
 module.exports = Customer;

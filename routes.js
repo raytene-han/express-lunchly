@@ -12,7 +12,12 @@ const router = new express.Router();
 /** Homepage: show list of customers. */
 
 router.get("/", async function (req, res, next) {
-  const customers = await Customer.all();
+  debugger
+  const searchTerm = req.query.search;
+  const customers = searchTerm ?
+    await Customer.search(searchTerm) :
+    await Customer.all();
+   
   return res.render("customer_list.html", { customers });
 });
 
@@ -83,3 +88,14 @@ router.post("/:id/add-reservation/", async function (req, res, next) {
 });
 
 module.exports = router;
+
+router.get("/", async function (req, res, next) {
+  const searchTerm = req.query.search;
+  const customers = Customer.search(searchTerm);
+  
+  return res.render("customer_list.html", { customers });
+})
+
+router.get("/", async function (req, res, next) {
+  const customers = await Customer.all();
+});
