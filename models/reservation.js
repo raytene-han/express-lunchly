@@ -6,6 +6,8 @@ const moment = require("moment");
 
 const db = require("../db");
 
+const {BadRequestError} = require('../expressError')
+
 /** A reservation for a party */
 
 class Reservation {
@@ -15,6 +17,17 @@ class Reservation {
     this.numGuests = numGuests;
     this.startAt = startAt;
     this.notes = notes;
+  }
+
+  
+  get numGuests() {
+    return this._numGuests;
+  }
+
+  set numGuests(val) {
+    if (val < 1)
+      throw new BadRequestError("Number of guests must be at least 1");
+    this._numGuests = val;
   }
 
   /** formatter for startAt */

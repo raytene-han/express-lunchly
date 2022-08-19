@@ -14,7 +14,15 @@ class Customer {
     this.lastName = lastName;
     this.phone = phone;
     this.notes = notes;
-    this.fullName = this.fullName();
+    this.fullName = this.fullName;
+  }
+
+  get notes() {
+    return this._notes;
+  }
+
+  set notes (val) {
+    this._notes = (!val) ?  "" : val;
   }
 
   /** find all customers. */
@@ -113,8 +121,12 @@ class Customer {
 
   /** concatenates first and last name */
 
-  fullName () {
-    return this.firstName.concat(' ', this.lastName);
+  get fullName () {
+    return this._fullName;
+  }
+  
+  set fullName (val) {
+    this._fullName = this.firstName.concat(' ', this.lastName);
   }
 
   /**search name :
@@ -124,8 +136,6 @@ class Customer {
   static async search(searchTerm) {
     let results;
 
-    //QUESTION: Can we do all of this in SQL conditional rather than repeating
-    // ourselves in this conditional statement
     results = await db.query(
       `SELECT id,
         first_name AS "firstName",
