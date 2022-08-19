@@ -32,6 +32,25 @@ class Customer {
     return results.rows.map(c => new Customer(c));
   }
 
+  /** gets top ten customers. */
+
+  static async getTopTen() {
+    const results = await db.query(
+          `SELECT c.id,
+                  c.first_name AS "firstName",
+                  c.last_name  AS "lastName",
+                  c.phone,
+                  c.notes
+          FROM customers AS c
+            JOIN reservations AS r
+              ON c.id = r.customer_id
+          GROUP BY c.id
+          ORDER BY COUNT (r.*) DESC
+          LIMIT 10`
+    );
+    return results.rows.map(c => new Customer(c));
+  }
+
   /** get a customer by ID. */
 
   static async get(id) {
@@ -93,19 +112,20 @@ class Customer {
   }
 
   /** concatenates first and last name */
+
   fullName () {
     return this.firstName.concat(' ', this.lastName);
   }
 
   /**search name :
    * receive search term of space separated name(s),
-   * return array of customer objects 
+   * return array of customer objects
     */
   static async search(searchTerm) {
     const names = searchTerm.split(' ');
     let results;
 
-    //QUESTION: Can we do all of this in SQL conditional rather than repeating 
+    //QUESTION: Can we do all of this in SQL conditional rather than repeating
     // ourselves in this conditional statement
     if (names.length === 1) {
     results = await db.query(
@@ -131,7 +151,7 @@ class Customer {
       );
     }
     return results.rows.map(c => new Customer(c));
-  } 
+  }
 }
 
 module.exports = Customer;
