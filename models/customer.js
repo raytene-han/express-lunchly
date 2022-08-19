@@ -122,12 +122,10 @@ class Customer {
    * return array of customer objects
     */
   static async search(searchTerm) {
-    const names = searchTerm.split(' ');
     let results;
 
     //QUESTION: Can we do all of this in SQL conditional rather than repeating
     // ourselves in this conditional statement
-    if (names.length === 1) {
     results = await db.query(
       `SELECT id,
         first_name AS "firstName",
@@ -135,21 +133,10 @@ class Customer {
         phone,
         notes
       FROM customers
-      WHERE first_name ilike $1 or last_name ilike $1
-      ORDER BY last_name, first_name`,['%'+names[0]+'%']
+      WHERE CONCAT(first_name, ' ', last_name) ilike $1
+      ORDER BY last_name, first_name`,['%'+searchTerm+'%']
     );
-  } else if ( names.length === 2) {
-      results = await db.query(
-        `SELECT id,
-          first_name AS "firstName",
-          last_name  AS "lastName",
-          phone,
-          notes
-        FROM customers
-        WHERE first_name ilike $1 and last_name ilike $2
-        ORDER BY last_name, first_name`,['%'+names[0]+'%','%'+names[1]+'%']
-      );
-    }
+
     return results.rows.map(c => new Customer(c));
   }
 }
