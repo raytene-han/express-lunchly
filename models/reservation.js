@@ -6,7 +6,7 @@ const moment = require("moment");
 
 const db = require("../db");
 
-const {BadRequestError} = require('../expressError')
+const {BadRequestError, UnauthorizedError} = require('../expressError')
 
 /** A reservation for a party */
 
@@ -19,7 +19,19 @@ class Reservation {
     this.notes = notes;
   }
 
-  
+
+  get customerId() {
+    return this._customerId;
+  }
+
+  set customerId(val) {
+    if (!this.customerId) {
+      this._customerId = val;
+    } else {
+      throw new UnauthorizedError("Not authorized to change customer ID");
+    }
+  }
+
   get numGuests() {
     return this._numGuests;
   }
@@ -30,11 +42,38 @@ class Reservation {
     this._numGuests = val;
   }
 
+  get startAt() {
+    return this._startAt;
+  }
+
+  set startAt(val) {
+    if (isNaN(val))
+      throw new BadRequestError("Provide valid date");
+    this._startAt = val;
+  }
+
   /** formatter for startAt */
 
   getFormattedStartAt() {
     return moment(this.startAt).format("MMMM Do YYYY, h:mm a");
   }
+
+  /** given a reservation id, find the reservation. */
+
+    static async getReservation(id) {
+      const results = await db.query(
+            `SELECT id,
+                    customer_id AS "customerId",
+                    num_guests AS "numGuests",
+                    start_at AS "startAt",
+                    notes AS "notes"
+             FROM reservations
+             WHERE id = $1`,
+          [id],
+      );
+
+      return results.rows[0];
+    }
 
   /** given a customer id, find their reservations. */
 
