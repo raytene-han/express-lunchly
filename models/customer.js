@@ -96,9 +96,17 @@ class Customer {
   fullName () {
     return this.firstName.concat(' ', this.lastName);
   }
+
+  /**search name :
+   * receive search term of space separated name(s),
+   * return array of customer objects 
+    */
   static async search(searchTerm) {
     const names = searchTerm.split(' ');
     let results;
+
+    //QUESTION: Can we do all of this in SQL conditional rather than repeating 
+    // ourselves in this conditional statement
     if (names.length === 1) {
     results = await db.query(
       `SELECT id,
